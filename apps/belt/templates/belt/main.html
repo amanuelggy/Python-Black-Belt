@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Main</title>
+    </head>
+
+    <body>
+        <h2>Hello, {{request.session.user_name}}!</h2>
+        <a href="/">logout</a>
+        <div>
+            <h3>Your Favorites</h3>
+            {% for i in user_quotes %}
+            <form action="/remove/{{i.id}}" method="post">
+                 {% csrf_token %}                
+                <table>                       
+                    <tr>
+                        <td> {{ i.quote }} </td>
+                    </tr>
+                    <tr>
+                        <td> posted by <a href="/user/{{i.id}}">{{i.quoted_by}}</a>&nbsp; &nbsp; <input type="submit" name = "remove" value="Remove From My List"> </td>
+                    </tr>                    
+                </table>
+            </form>
+            {% endfor %}
+        </div>
+        <div>
+            <h3>Quotable Quotes</h3>
+             {% for i in other_users %}
+            <form action="/list/{{i.id}}" method="post">
+                {% csrf_token %}
+                
+                <table>                    
+                    <tr>
+                        <td> {{ i.quote }} </td>
+                    </tr>
+                    <tr>
+                        <td> posted by <a href="user/{{i.id}}">{{i.quoted_by}}</a>&nbsp; &nbsp; <input type="submit" name="add_to_list" value="Add to My List"> </td>
+                    </tr>
+                    
+                </table>
+            </form>
+             {% endfor %}
+        </div>
+        <div>
+            <h2>Contribute a Quote:</h2>
+            <form action="/add" method="post">
+                {% csrf_token %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <table>
+                    <tr>
+                        <td> Quoted By: </td>
+                        <td><input type="text" name="quoted_by"></td>
+                    </tr>
+                   
+                    <tr>
+                        <td> Message: </td>
+                        <td><textarea rows="4" cols="21.5" name="new_quote"></textarea></td>
+                    </tr>
+                   
+                </table>
+                <input type="submit" name="add" value="Submit" class="reg">
+            </form>
+            
+        </div>
+    </body>
+</html>
